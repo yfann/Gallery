@@ -11,7 +11,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0"
@@ -22,19 +22,54 @@
                     Width="50"
                     Content="打开"
                     Command="{Binding OpenFileCommand}" />
+            <Button Margin="3"
+                    Width="50"
+                    Content="删除"
+                    Command="{Binding RemoveCommand}" />
         </StackPanel>
 
-        <ListBox Margin="2"
-                 Grid.Row="1"
+        <ListBox Grid.Row="1"
                  Grid.Column="0"
-                 ItemsSource="{Binding Images}">
+                 Margin="2"
+                 ItemsSource="{Binding Images}"
+                 SelectionChanged="ListBox_SelectionChanged"
+                 SelectionMode="Multiple"
+                 AllowDrop="True"
+                 Drop="ListBox_Drop">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Image Width="90"
                            Height="90"
+                           Margin="3"
                            Source="{Binding}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackGroundBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Width="200" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.Template>
+                <ControlTemplate>
+                    <Border BorderThickness="1"
+                            BorderBrush="{StaticResource BorderBlue}">
+                        <ScrollViewer VerticalScrollBarVisibility="Visible">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </ListBox.Template>
         </ListBox>
 
     </Grid>

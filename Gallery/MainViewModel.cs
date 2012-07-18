@@ -11,13 +11,15 @@ namespace Gallery
     internal class MainViewModel : BaseViewModel
     {
         private readonly DelegateCommand<object> _openFileCommand;
+        private readonly DelegateCommand<object> _removeCommand;
         private INavigateManager navigator;
-        private ObservableCollection<string> _images;
 
         public MainViewModel()
         {
             navigator = new NavigateManager();
             _openFileCommand = new DelegateCommand<object>(OpenFile);
+            _removeCommand = new DelegateCommand<object>(CanRemove, RemoveFile);
+            RemoveLists = new ObservableCollection<string>();
             //Images = new ObservableCollection<string>() { "test1", "test12" };
         }
 
@@ -29,16 +31,36 @@ namespace Gallery
             }
         }
 
+        public ICommand RemoveCommand
+        {
+            get
+            {
+                return _removeCommand;
+            }
+        }
+
         public ObservableCollection<string> Images
         {
             get
             {
-                return _images;
+                return GetValue(() => Images);
             }
             set
             {
-                _images = value;
-                NotifyPropertyChanged<ObservableCollection<string>>(() => this.Images);
+                SetValue(() => Images, value);
+            }
+        }
+
+        public IEnumerable<string> RemoveLists
+        {
+            get
+            {
+                return GetValue(() => RemoveLists);
+            }
+            set
+            {
+                SetValue(() => RemoveLists, value);
+                _removeCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -53,8 +75,23 @@ namespace Gallery
             {
                 foreach (string name in files)
                 {
-                    Images.Add(name);
+                    if (!Images.Contains(name))
+                        Images.Add(name);
                 }
+            }
+        }
+
+        public bool CanRemove(object parameter)
+        {
+            return RemoveLists != null && RemoveLists.Count() > 0 ? true : false;
+        }
+
+        public void RemoveFile(object parameter)
+        {
+            List<string> temp = new List<string>(RemoveLists);//直接遍历RemoveLists会因remove产生的索引更改而产生错误
+            foreach (var item in temp)
+            {
+                Images.Remove(item);
             }
         }
     }
