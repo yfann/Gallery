@@ -16,11 +16,12 @@ namespace Gallery
 
         public MainViewModel()
         {
+            Images = new ObservableCollection<string>();
             navigator = new NavigateManager();
             _openFileCommand = new DelegateCommand<object>(OpenFile);
             _removeCommand = new DelegateCommand<object>(CanRemove, RemoveFile);
             RemoveLists = new ObservableCollection<string>();
-            //Images = new ObservableCollection<string>() { "test1", "test12" };
+
         }
 
         public ICommand OpenFileCommand
@@ -67,17 +68,11 @@ namespace Gallery
         public void OpenFile(object parameter)
         {
             IEnumerable<string> files = navigator.OpenFiles();
-            if (Images == null)
+
+            foreach (string name in files)
             {
-                Images = new ObservableCollection<string>(files);
-            }
-            else
-            {
-                foreach (string name in files)
-                {
-                    if (!Images.Contains(name))
-                        Images.Add(name);
-                }
+                if (!Images.Contains(name))
+                    Images.Add(name);
             }
         }
 
