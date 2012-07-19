@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DataAccess.Helper;
+using Infrastructure;
 
 namespace Gallery
 {
@@ -23,7 +25,7 @@ namespace Gallery
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            DataContext = new MainViewModel(); new MongoHelper();
         }
 
         private MainViewModel ViewModel
