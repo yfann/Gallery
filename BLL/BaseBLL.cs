@@ -16,12 +16,12 @@ namespace BLL
             return dal.FindOne(query, preprocess);
         }
 
-        public IList<TDocument> FindAll()
+        public virtual IList<TDocument> FindAll()
         {
             return dal.FindAll();
         }
 
-        public void Save(TDocument t)
+        public virtual void Save(TDocument t)
         {
             dal.Save(t);
         }

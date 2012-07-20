@@ -11,11 +11,21 @@ namespace DataAccess.Helper
 {
     public class MongoHelper
     {
-        private static readonly MongoConnectionStringBuilder ConnectionStringBuilder;
+        private static readonly MongoConnectionStringBuilder ConnectionString;
+        private static readonly MongoUrlBuilder ConnectionUrl;
+        private static readonly bool IsConnectionUrl;
 
         static MongoHelper()
         {
-            ConnectionStringBuilder = new MongoConnectionStringBuilder(Configuration.ConnectionString);
+            if (Configuration.ConnectionString.StartsWith("mongodb://"))
+            {
+                IsConnectionUrl = true;
+                ConnectionUrl = new MongoUrlBuilder(Configuration.ConnectionString);
+            }
+            else
+            {
+                ConnectionString = new MongoConnectionStringBuilder(Configuration.ConnectionString);
+            }
         }
 
         public static MongoServer GetServer(string connectionString)
@@ -26,7 +36,15 @@ namespace DataAccess.Helper
 
         public static MongoServer GetServer()
         {
-            var server = MongoServer.Create(ConnectionStringBuilder);
+            MongoServer server = null;
+            if (IsConnectionUrl)
+            {
+                server = MongoServer.Create(ConnectionUrl.ToMongoUrl());
+            }
+            else
+            {
+                server = MongoServer.Create(ConnectionString);
+            }
             return server;
         }
 
@@ -37,7 +55,14 @@ namespace DataAccess.Helper
 
         public static MongoDatabase GetDatabase()
         {
-            return GetDatabase(ConnectionStringBuilder.DatabaseName);
+            if (IsConnectionUrl)
+            {
+                return GetDatabase(ConnectionUrl.DatabaseName);
+            }
+            else
+            {
+                return GetDatabase(ConnectionString.DatabaseName);
+            }
         }
     }
 }

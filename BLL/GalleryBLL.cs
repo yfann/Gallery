@@ -9,5 +9,9 @@ namespace BLL
 {
     public class GalleryBLL : BaseBLL<GalleryDAL, GalleryModel>
     {
+        public override void Save(GalleryModel m)
+        {
+            base.Save(m);
+        }
     }
 }

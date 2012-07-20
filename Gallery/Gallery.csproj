@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,6 +60,7 @@
     <Compile Include="Base\DelegateCommand.cs" />
     <Compile Include="Base\INavigateManager.cs" />
     <Compile Include="Base\NavigateManager.cs" />
+    <Compile Include="Converter\BitmapToBitmapSourceConverter.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="UpdateList.xaml.cs">
       <DependentUpon>UpdateList.xaml</DependentUpon>
@@ -110,6 +112,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{ECCABD5B-B173-481B-8518-0D4F8F871431}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{D3C9DED6-4522-4245-A4D4-DC92805D6D46}</Project>
       <Name>DataAccess</Name>

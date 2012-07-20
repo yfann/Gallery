@@ -8,11 +8,6 @@ namespace Infrastructure
 {
     public class Configuration
     {
-        public static readonly string ConnectionString;
-
-        static Configuration()
-        {
-            ConnectionString = ConfigurationManager.ConnectionStrings["Gallery"].ConnectionString;
-        }
+        public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["Gallery"].ConnectionString;
     }
 }
