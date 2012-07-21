@@ -15,5 +15,14 @@ namespace Gallery.Base
             op.ShowDialog();
             return op.FileNames;
         }
+
+        public void OpenPictureViewer(string fileName)
+        {
+            PictureView view = new PictureView();
+            view.DataContext = new PictureViewModel(fileName);
+            view.ShowActivated=false;
+            view.Show();
+          
+        }
     }
 }

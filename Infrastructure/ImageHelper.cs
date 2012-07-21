@@ -18,19 +18,19 @@ namespace Infrastructure
                 imageName = path.Substring(index + 1, path.Length - index - 1);
             string[] strs = imageName.Split('.');
             //name = strs[0];
-            name = Guid.NewGuid().ToString();
             extName = strs[1];
+            name = Guid.NewGuid().ToString() + "."+extName;
         }
 
         public static Bitmap GetThumbnail(Bitmap source)
         {
             if (source.Width > source.Height)
             {
-                return MakeThumbnail(source, 150, 150, ThumbnailType.W);
+                return MakeThumbnail(source, Configuration.ThumbnailWidth, Configuration.ThumbnailHeight, ThumbnailType.W);
             }
             else
             {
-                return MakeThumbnail(source, 150, 150, ThumbnailType.H);
+                return MakeThumbnail(source, Configuration.ThumbnailWidth, Configuration.ThumbnailHeight, ThumbnailType.H);
             }
         }
 

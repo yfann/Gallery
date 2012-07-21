@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="ImageHelper.cs" />

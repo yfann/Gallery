@@ -6,6 +6,7 @@ using Infrastructure;
 using Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 
 namespace DataAccess.Helper
 {
@@ -63,6 +64,11 @@ namespace DataAccess.Helper
             {
                 return GetDatabase(ConnectionString.DatabaseName);
             }
+        }
+
+        public static MongoGridFS GetGridFS()
+        {
+            return GetDatabase().GridFS;
         }
     }
 }

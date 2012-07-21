@@ -29,7 +29,7 @@ namespace Gallery
             _uploadCommand = new DelegateCommand<object>(CanUpload, UploadFile);
             _searchCommand = new DelegateCommand<object>(Search);
             Images = new ObservableCollection<string>();
-            _galleryBLL = new GalleryBLL();
+            _galleryBLL = GalleryBLL.GetBLL();
             Images.CollectionChanged += new NotifyCollectionChangedEventHandler(Images_CollectionChanged);
             //RemoveLists = new ObservableCollection<string>();
             navigator = new NavigateManager();
@@ -153,6 +153,8 @@ namespace Gallery
                 gallery.path = path;
                 _galleryBLL.Save(gallery);
             }
+
+            Images.Clear();
         }
 
         public void Search(object parameter)
@@ -160,5 +162,11 @@ namespace Gallery
             IList<GalleryModel> list = _galleryBLL.FindAll();
             GalleryList = new ObservableCollection<GalleryModel>(list);
         }
+
+        public void OpenPictureView(string fileName)
+        {
+            navigator.OpenPictureViewer(fileName);
+        }
+
     }
 }

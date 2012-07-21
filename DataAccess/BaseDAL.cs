@@ -5,27 +5,20 @@ using System.Text;
 using DataAccess.Helper;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
+using System.IO;
 
 namespace DataAccess
 {
-    /// <summary>
-    /// 数据访问层基类
-    /// </summary>
-    /// <typeparam name="T">文档实体类</typeparam>
+
     public abstract class BaseDAL<TDocument>
     {
         protected internal string CollectionName { set; get; }
 
-        /// <summary>
-        /// 设置集合名
-        /// </summary>
         protected abstract string SetCollectionName();
 
         private MongoCollection<TDocument> m_collection;
 
-        /// <summary>
-        /// 根据CollectionName得到MongoCollection对象
-        /// </summary>
         protected internal MongoCollection<TDocument> Collection
         {
             get
@@ -33,18 +26,27 @@ namespace DataAccess
                 if (m_collection == null)
                 {
                     CollectionName = SetCollectionName();
-                    m_collection = MongoHelper.GetDatabase("yfann").GetCollection<TDocument>(CollectionName);
+                    m_collection = MongoHelper.GetDatabase().GetCollection<TDocument>(CollectionName);
                 }
                 return m_collection;
             }
         }
 
-        /// <summary>
-        /// 根据query条件得到一个文档对象
-        /// </summary>
-        /// <param name="query">查询条件</param>
-        /// <param name="preprocess">预处理方法</param>
-        /// <returns></returns>
+
+        public MongoGridFSFileInfo UploadFile(string localpath, string remoteName)
+        {
+            MongoGridFS fs = MongoHelper.GetGridFS();
+
+            return fs.Upload(localpath,remoteName);
+        }
+
+        public void GetFile(Stream s,string fileName)
+        {
+            MongoGridFS fs = MongoHelper.GetGridFS();
+            fs.Download(s,fileName);
+        }
+
+
         public TDocument FindOne(IMongoQuery query, Action<TDocument> preprocess)
         {
             var document = Collection.FindOne(query);
@@ -55,12 +57,6 @@ namespace DataAccess
             return document;
         }
 
-        /// <summary>
-        /// 把MongoCursor转换成IList类型
-        /// </summary>
-        /// <param name="cursor">文档游标</param>
-        /// <param name="preprocess">预处理方法</param>
-        /// <returns></returns>
         protected internal IList<TDocument> CursorToList(MongoCursor<TDocument> cursor, Action<TDocument> preprocess)
         {
             IList<TDocument> list = new List<TDocument>(30);
@@ -75,12 +71,6 @@ namespace DataAccess
             return list;
         }
 
-        /// <summary>
-        /// 根据query查询集合
-        /// </summary>
-        /// <param name="query">条件</param>
-        /// <param name="preprocess">预处理方法</param>
-        /// <returns></returns>
         public IList<TDocument> Find(IMongoQuery query, MongoCursorSettings cursorSettings, Action<TDocument> preprocess)
         {
             var cursor = Collection.Find(query);

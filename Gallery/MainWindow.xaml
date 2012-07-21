@@ -93,7 +93,9 @@
                     <Image Width="150"
                            Height="150"
                            Margin="3"
-                           Source="{Binding Pic,Converter={StaticResource BitmapToBitmapSourceConverter}}" />
+                           Source="{Binding Pic,Converter={StaticResource BitmapToBitmapSourceConverter}}" 
+                           MouseDown="Image_MouseDown"
+                           />
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ItemContainerStyle>
@@ -117,7 +119,8 @@
                     <Border BorderThickness="1"
                             BorderBrush="{StaticResource BorderBlue}">
                         <ScrollViewer VerticalScrollBarVisibility="Visible"
-                                      HorizontalScrollBarVisibility="Disabled">
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      >
                             <ItemsPresenter />
                         </ScrollViewer>
                     </Border>

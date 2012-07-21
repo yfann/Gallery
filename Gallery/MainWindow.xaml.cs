@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Infrastructure;
-
+using Models;
 namespace Gallery
 {
     /// <summary>
@@ -26,7 +26,6 @@ namespace Gallery
             InitializeComponent();
             DataContext = new MainViewModel();
         }
-
         private MainViewModel ViewModel
         {
             get
@@ -72,6 +71,16 @@ namespace Gallery
             foreach (var i in list)
             {
                 yield return i.ToString();
+            }
+        }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left || e.ClickCount >= 2)
+            {
+                Image s=sender as Image;
+                GalleryModel g=s.DataContext as GalleryModel;
+                ViewModel.OpenPictureView(g.ImageName);
             }
         }
     }

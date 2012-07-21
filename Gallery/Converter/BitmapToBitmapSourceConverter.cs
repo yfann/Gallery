@@ -15,7 +15,6 @@ namespace Gallery.Converter
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             Bitmap bm = value as Bitmap;
-            //Bitmap bm = new Bitmap("C:\\Users\\Public\\Pictures\\Sample Pictures\\Koala.jpg");
             BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(bm.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             return bs;
         }
