@@ -8,6 +8,6 @@ namespace Gallery.Base
     public interface INavigateManager
     {
         IEnumerable<string> OpenFiles();
-        void OpenPictureViewer(string fileName);
+        void OpenPictureViewer(string fileName,IList<string> PicList);
     }
 }

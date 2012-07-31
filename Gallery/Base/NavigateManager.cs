@@ -16,10 +16,10 @@ namespace Gallery.Base
             return op.FileNames;
         }
 
-        public void OpenPictureViewer(string fileName)
+        public void OpenPictureViewer(string fileName,IList<string> PicList)
         {
             PictureView view = new PictureView();
-            view.DataContext = new PictureViewModel(fileName);
+            view.DataContext = new PictureViewModel(fileName,PicList);
             view.ShowActivated=false;
             view.Show();
           

@@ -25,17 +25,30 @@ namespace Gallery
             Width = SystemParameters.PrimaryScreenWidth;
         }
 
-        private void viewer_MouseEnter(object sender, MouseEventArgs e)
+        public PictureViewModel ViewModel
         {
-            tools.Visibility = Visibility.Visible;
+            get
+            {
+                if (DataContext != null)
+                {
+                    return DataContext as PictureViewModel;
+                }
+                else
+                {
+                    throw new NullReferenceException("PictureViewModel 不能为null");
+                }
+            }
         }
 
-        private void viewer_MouseLeave(object sender, MouseEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            tools.Visibility = Visibility.Collapsed;
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
         }
 
-        private void viewer_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right)
             {
@@ -43,5 +56,46 @@ namespace Gallery
             }
         }
 
+        private void viewer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            //if (e.Delta < 0)
+            //{
+            //    ViewModel.NextPicture();
+            //}
+            //else
+            //{
+            //    ViewModel.PreviousPicture();
+            //}
+            Point mouse=Mouse.GetPosition(this);
+            Point imageOrigin = GetImageOriginPoint();
+            this.scaleTrs.CenterX = mouse.X - imageOrigin.X;
+            this.scaleTrs.CenterY = mouse.Y - imageOrigin.Y;
+            scaleTrs.ScaleX += (double)e.Delta / 1000;
+            scaleTrs.ScaleY += (double)e.Delta / 1000;
+        }
+
+
+        protected Point GetImageOriginPoint()
+        {
+            Point imageOrigin = new Point();
+            double imgWidth=viewer.Source.Width;
+            double imgHeight = viewer.Source.Height;
+            if (imgHeight > imgWidth)
+            {
+                imageOrigin.X = (this.Width-imgWidth / imgHeight * this.Height)/2;
+                imageOrigin.Y = 0;
+            }
+            else
+            {
+                imageOrigin.X = 0;
+                imageOrigin.Y = (this.Height-imgHeight / imgWidth * this.Width)/2;
+            }
+            return imageOrigin;
+        }
     }
 }

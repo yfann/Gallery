@@ -165,7 +165,7 @@ namespace Gallery
 
         public void OpenPictureView(string fileName)
         {
-            navigator.OpenPictureViewer(fileName);
+            navigator.OpenPictureViewer(fileName, GalleryList.Select(o=>o.ImageName).ToList());
         }
 
     }
