@@ -9,7 +9,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Models
 {
     [Serializable]
-    public class GalleryModel
+    public class GalleryModel : BaseModel
     {
         public ObjectId Id { get; set; }
 
@@ -17,7 +17,17 @@ namespace Models
 
         public string ExtName { get; set; }
 
-        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<string> Tags
+        {
+            get
+            {
+                return GetValue(() => Tags);
+            }
+            set
+            {
+                SetValue(() => Tags, value);
+            }
+        }
 
         public DateTime CreateTime { get; set; }
 

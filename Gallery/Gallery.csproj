@@ -60,15 +60,20 @@
     <Compile Include="Base\DelegateCommand.cs" />
     <Compile Include="Base\INavigateManager.cs" />
     <Compile Include="Base\NavigateManager.cs" />
+    <Compile Include="Controls\EditableTextBlock.xaml.cs">
+      <DependentUpon>EditableTextBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\BitmapToBitmapSourceConverter.cs" />
+    <Compile Include="Converter\TagListToStringConverter.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="PictureView.xaml.cs">
       <DependentUpon>PictureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PictureViewModel.cs" />
-    <Compile Include="UpdateList.xaml.cs">
-      <DependentUpon>UpdateList.xaml</DependentUpon>
-    </Compile>
+    <Page Include="Controls\EditableTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,10 +91,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sources\Styles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UpdateList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

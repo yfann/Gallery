@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Infrastructure;
 using Models;
+
 namespace Gallery
 {
     /// <summary>
@@ -26,6 +27,7 @@ namespace Gallery
             InitializeComponent();
             DataContext = new MainViewModel();
         }
+
         private MainViewModel ViewModel
         {
             get
@@ -46,7 +48,7 @@ namespace Gallery
             var listbox = sender as ListBox;
             if (ViewModel != null && listbox.SelectedItems != null)
             {
-                ViewModel.RemoveLists = GetList(listbox.SelectedItems);
+                ViewModel.RemoveLists = listbox.SelectedItems;
             }
         }
 
@@ -58,19 +60,11 @@ namespace Gallery
 
                 foreach (var file in filePaths)
                 {
-                    if (!ViewModel.Images.Contains(file))
+                    if (!ViewModel.UploadList.Where(o => object.Equals(o.path, file)).Any())
                     {
-                        ViewModel.Images.Add(file);
+                        ViewModel.UploadList.Add(new GalleryModel { path = file });
                     }
                 }
-            }
-        }
-
-        public IEnumerable<string> GetList(IList list)
-        {
-            foreach (var i in list)
-            {
-                yield return i.ToString();
             }
         }
 
@@ -78,8 +72,8 @@ namespace Gallery
         {
             if (e.ChangedButton == MouseButton.Left || e.ClickCount >= 2)
             {
-                Image s=sender as Image;
-                GalleryModel g=s.DataContext as GalleryModel;
+                Image s = sender as Image;
+                GalleryModel g = s.DataContext as GalleryModel;
                 ViewModel.OpenPictureView(g.ImageName);
             }
         }

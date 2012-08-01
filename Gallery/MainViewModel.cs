@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -19,6 +20,7 @@ namespace Gallery
         private readonly DelegateCommand<object> _removeCommand;
         private readonly DelegateCommand<object> _uploadCommand;
         private readonly DelegateCommand<object> _searchCommand;
+        private readonly DelegateCommand<object> _setTagCommand;
         private INavigateManager navigator;
         private GalleryBLL _galleryBLL;
 
@@ -28,9 +30,10 @@ namespace Gallery
             _removeCommand = new DelegateCommand<object>(CanRemove, RemoveFile);
             _uploadCommand = new DelegateCommand<object>(CanUpload, UploadFile);
             _searchCommand = new DelegateCommand<object>(Search);
-            Images = new ObservableCollection<string>();
+            _setTagCommand = new DelegateCommand<object>(SetTag);
+            UploadList = new ObservableCollection<GalleryModel>();
             _galleryBLL = GalleryBLL.GetBLL();
-            Images.CollectionChanged += new NotifyCollectionChangedEventHandler(Images_CollectionChanged);
+            UploadList.CollectionChanged += new NotifyCollectionChangedEventHandler(UploadList_CollectionChanged);
             //RemoveLists = new ObservableCollection<string>();
             navigator = new NavigateManager();
         }
@@ -67,7 +70,15 @@ namespace Gallery
             }
         }
 
-        public void Images_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public ICommand SetTagCommand
+        {
+            get
+            {
+                return _setTagCommand;
+            }
+        }
+
+        public void UploadList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _uploadCommand.NotifyCanExecuteChanged();
         }
@@ -84,19 +95,31 @@ namespace Gallery
             }
         }
 
-        public ObservableCollection<string> Images
+        public ObservableCollection<GalleryModel> UploadList
         {
             get
             {
-                return GetValue(() => Images);
+                return GetValue(() => UploadList);
             }
             set
             {
-                SetValue(() => Images, value);
+                SetValue(() => UploadList, value);
             }
         }
 
-        public IEnumerable<string> RemoveLists
+        public string Tags
+        {
+            get
+            {
+                return GetValue(() => Tags);
+            }
+            set
+            {
+                SetValue(() => Tags, value);
+            }
+        }
+
+        public IList RemoveLists
         {
             get
             {
@@ -115,46 +138,56 @@ namespace Gallery
 
             foreach (string name in files)
             {
-                if (!Images.Contains(name))
-                    Images.Add(name);
+                if (!UploadList.Where(o => Object.Equals(o.path, name)).Any())
+                {
+                    UploadList.Add(new GalleryModel { path = name });
+                }
             }
         }
 
         public bool CanRemove(object parameter)
         {
-            return RemoveLists != null && RemoveLists.Count() > 0 ? true : false;
+            return RemoveLists != null && RemoveLists.Count > 0 ? true : false;
         }
 
         public void RemoveFile(object parameter)
         {
-            List<string> temp = new List<string>(RemoveLists);//直接遍历RemoveLists会因remove产生的索引更改而产生错误
-            foreach (var item in temp)
+            List<string> list = new List<string>();
+            foreach (var item in RemoveLists)
             {
-                Images.Remove(item);
+                GalleryModel gm = item as GalleryModel;
+                if (gm != null)
+                {
+                    list.Add(gm.path);
+                }
+            }
+
+            foreach (var item in list)
+            {
+                GalleryModel g = UploadList.Where(o => object.Equals(o.path, item)).First();
+                UploadList.Remove(g);
             }
         }
 
         public bool CanUpload(object parameter)
         {
-            return Images.Count > 0 ? true : false;
+            return UploadList.Count > 0 ? true : false;
         }
 
         public void UploadFile(object parameter)
         {
-            foreach (var path in Images)
+            foreach (var gm in UploadList)
             {
-                GalleryModel gallery = new GalleryModel();
                 string name, extName;
-                ImageHelper.GetImageName(path, out name, out extName);
-                gallery.ImageName = name;
-                gallery.ExtName = extName;
-                gallery.Pic = ImageHelper.GetThumbnail(new Bitmap(path));
-                gallery.CreateTime = DateTime.Now;
-                gallery.path = path;
-                _galleryBLL.Save(gallery);
+                ImageHelper.GetImageName(gm.path, out name, out extName);
+                gm.ImageName = name;
+                gm.ExtName = extName;
+                gm.Pic = ImageHelper.GetThumbnail(new Bitmap(gm.path));
+                gm.CreateTime = DateTime.Now;
+                _galleryBLL.Save(gm);
             }
 
-            Images.Clear();
+            UploadList.Clear();
         }
 
         public void Search(object parameter)
@@ -163,10 +196,23 @@ namespace Gallery
             GalleryList = new ObservableCollection<GalleryModel>(list);
         }
 
-        public void OpenPictureView(string fileName)
+        public void SetTag(object parameter)
         {
-            navigator.OpenPictureViewer(fileName, GalleryList.Select(o=>o.ImageName).ToList());
+            if (!string.IsNullOrEmpty(Tags))
+            {
+                string[] temp = Tags.Split(' ');
+                List<string> list = new List<string>(temp);
+                foreach (var item in UploadList)
+                {
+                    item.Tags = list;
+                }
+            }
+            UploadList = UploadList;
         }
 
+        public void OpenPictureView(string fileName)
+        {
+            navigator.OpenPictureViewer(fileName, GalleryList.Select(o => o.ImageName).ToList());
+        }
     }
 }

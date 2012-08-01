@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Sources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Converter:BitmapToBitmapSourceConverter x:Key="BitmapToBitmapSourceConverter" />
+            <Converter:TagListToStringConverter x:Key="TagListToStringConverter" />
         </ResourceDictionary>
 
     </Application.Resources>
