@@ -25,7 +25,7 @@ namespace Gallery.Converter
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string temp = value as string;
-            if (string.IsNullOrEmpty(temp))
+            if (!string.IsNullOrEmpty(temp))
             {
                 Regex re = new Regex(@"\s+");
                 temp = re.Replace(temp, " ");
